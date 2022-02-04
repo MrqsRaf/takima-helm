@@ -1,0 +1,9 @@
+{{- if .Values.db.enabled }}
+apiVersion: {{ .Values.db.api_version }}
+kind: ConfigMap
+metadata:
+  name: pg-config
+data:
+  db_name: {{ .Values.db.name }}
+  db_path: {{ .Values.db.path }}
+{{- end }}

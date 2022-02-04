@@ -1,0 +1,9 @@
+{{- if .Values.api.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-config
+data:
+  DB_ENDPOINT: {{ .Values.api.db_endpoint }}
+  DB_NAME: {{ .Values.api.db_name }}
+{{- end }}

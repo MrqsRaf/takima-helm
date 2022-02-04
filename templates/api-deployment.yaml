@@ -1,0 +1,46 @@
+{{- if .Values.api.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.api.name }}
+  labels:
+    app: {{ .Values.api.name }}
+spec:
+  replicas: {{ .Values.api.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.api.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.api.name }}
+    spec:
+      imagePullSecrets:
+        - name: {{ .Values.api.image_pull_secrets }}
+      containers:
+      - name: {{ .Values.api.name }}
+        image: {{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}
+        ports:
+        - containerPort: 8080
+        env:
+          - name: DB_ENDPOINT
+            valueFrom:
+              configMapKeyRef:
+                name: api-config
+                key: DB_ENDPOINT
+          - name: POSTGRES_DB
+            valueFrom:
+              configMapKeyRef:
+                name: api-config
+                key: DB_NAME
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: pg-credentials  # Nom du secret
+                key: pg_username     # nom de la clef dans le config map
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: pg-credentials  # Nom du secret
+                key: pg_password
+{{- end }}

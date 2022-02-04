@@ -1,0 +1,53 @@
+{{- if .Values.db.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pg-database
+  labels:
+    app: {{ .Values.db.app }}
+spec:
+  replicas: {{ .Values.db.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.db.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.db.app }}
+    spec:
+      containers:
+      - name: postgres
+        image: {{ .Values.db.image.repository }}:{{ .Values.db.image.tag }}
+        volumeMounts:
+        - mountPath: {{ .Values.db.volume.mount_path }}
+          name: pg-data
+        ports:
+        - containerPort: {{ .Values.db.ports.container_port }}
+        env:
+          - name: POSTGRES_DB
+            valueFrom:
+              configMapKeyRef:
+                name: pg-config  # Nom du configmap
+                key: db_name     # nom de la clef dans le config map contenant le nom de la DB
+          - name: PGDATA
+            valueFrom:
+              configMapKeyRef:
+                name: pg-config  # Nom du configmap
+                key: db_path     # nom de la clef dans le configMap contenant path ou installer la db dans le volume persistant
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: pg-credentials  # Nom du secret
+                key: pg_username     # nom de la clef dans le secret
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: pg-credentials  # Nom du secret
+                key: pg_password     # nom de la clef dans le secret contenant le password
+      volumes:
+      - name: pg-data
+        persistentVolumeClaim:
+          claimName: pg-db
+      imagePullSecrets:
+      - name: {{ .Values.db.image_pull_secrets }}
+{{- end }}
