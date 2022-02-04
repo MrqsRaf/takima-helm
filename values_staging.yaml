@@ -1,0 +1,66 @@
+# Default values for CDB app.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+## The global properties are used to configure multiple charts at once.
+## Extended documentation at doc/charts/globals.md
+
+api:
+  enabled: true
+  ingress:
+    tls:
+      enable: false
+    host: staging.api.rafael-marques.takima.cloud
+    port: 80
+  service:
+    port: 80
+    target_port: 8080
+    protocol: TCP
+  db_endpoint: "postgres:5432"
+  db_name: "cdb-db"
+  name: api
+  image:
+   repository: master3.takima.io:4567/master3/kubernetes-resources/api
+   tag: latest
+  image_pull_secrets: auth-master3-registry
+  replicas: 6
+
+front:
+  enabled: true
+  image:
+    repository: master3.takima.io:4567/master3/kubernetes-resources/front
+    tag: latest
+  serviceName: front
+  servicePort: 80
+  replicaCount: 3
+  ingress:
+    enabled: true
+    host: www.staging.rafael-marques.takima.cloud
+    tls:
+      enabled: false
+
+db:
+  enabled: true
+  image:
+    repository: master3.takima.io:4567/master3/kubernetes-resources/db
+    tag: latest
+  name: "cdb-db"
+  path: "/var/lib/postgresql/data/pgdata"
+  serviceName: db
+  servicePort: 5432
+  api_version: v1
+  image_pull_secrets: auth-master3-registry
+  app: pg
+  replicas: 1
+  volume:
+    mount_path: /var/lib/postgresql/data
+  ports:
+    container_port: 80
+  pvc:
+    storageClass: gp2
+    size: 512Mi
+  credentials:
+    user: YWRtaW4=
+    pwd: dGVzdDEyMyo=
+    name: pg-credentials
+
