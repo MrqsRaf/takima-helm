@@ -23,7 +23,7 @@ api:
    repository: master3.takima.io:4567/master3/kubernetes-resources/api
    tag: latest
   image_pull_secrets: auth-master3-registry
-  replicas: 3
+  replicas: 6
 
 front:
   enabled: true
