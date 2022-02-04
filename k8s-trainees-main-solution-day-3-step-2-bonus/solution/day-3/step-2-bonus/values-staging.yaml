@@ -5,7 +5,7 @@
 ## The global properties are used to configure multiple charts at once.
 ## Extended documentation at doc/charts/globals.md
 
-nameOverride: cdb-loic
+nameOverride: cdb-staging
 
 api:
   enabled: true
@@ -18,7 +18,7 @@ api:
     startupPeriodSeconds: 10
   ingress:
     enabled: true
-    host: api.lortola.takima.cloud
+    host: api.staging.to-replace.takima.cloud
     tls:
       enabled: true
 
@@ -31,7 +31,7 @@ front:
   replicaCount: 3
   ingress:
     enabled: true
-    host: www.lortola.takima.cloud
+    host: www.staging.to-replace.takima.cloud
     tls:
       enabled: true
 
